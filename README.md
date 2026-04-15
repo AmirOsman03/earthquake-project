@@ -39,7 +39,7 @@ The entire stack (Frontend, Backend, and Database) can be launched using Docker 
 
 ### Prerequisites
 - **Java 17+**
-- **Node.js 18+**
+- **Node.js 22+**
 - **Maven 3.6+**
 - **Docker & Docker Compose**
 
