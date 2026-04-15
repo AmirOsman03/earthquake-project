@@ -1,0 +1,8 @@
+/* Custom styles on top of Bootstrap */
+body {
+  background-color: #f8f9fa;
+}
+
+.badge.rounded-circle {
+  flex-shrink: 0;
+}
