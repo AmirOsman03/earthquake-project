@@ -104,13 +104,25 @@ The dashboard will be available at `http://localhost:3000`.
 ## 📂 Project Structure
 ```text
 earthquake-project/
-├── backend/            # Spring Boot Application
-│   ├── src/            # Java source & resources
-│   └── docker-compose.yml
-└── frontend/           # React + Vite Application
+├── docker-compose.yml   # Multi-container orchestration
+├── backend/             # Spring Boot Application
+│   ├── src/main/java/com/codeit/assignment/
+│   │   ├── config/      # Application & Web security settings
+│   │   ├── web/         # REST API Controllers
+│   │   ├── service/     # Business logic & USGS API client
+│   │   ├── model/       # JPA Entities (PostgreSQL)
+│   │   ├── dto/         # Data Transfer Objects
+│   │   └── repository/  # Data Access layer (Spring Data JPA)
+│   ├── src/test/        # Mockito/JUnit 5 test suite
+│   ├── Dockerfile
+│   └── docker-compose.yml # Database-only container
+└── frontend/            # React + Vite Application
     ├── src/
-    │   ├── hooks/      # State & API hooks
-    │   ├── repository/ # API Service layer
-    │   └── axios/      # Client configuration
-    └── vite.config.js
+    │   ├── axios/       # API client configuration
+    │   ├── hooks/       # Custom React hooks (useEarthquakes)
+    │   ├── repository/  # API orchestration layer
+    │   ├── App.jsx      # Main dashboard & UI components
+    │   └── main.jsx     # Frontend entry point
+    ├── vite.config.js
+    └── Dockerfile
 ```
