@@ -1,71 +1,102 @@
-# Earthquake Monitoring Project
+# 🌍 Earthquake Monitoring & Management System
 
-A full-stack application for monitoring recent earthquake activity around the world using USGS data.
+A full-stack application for monitoring, fetching, and managing earthquake data from the USGS (United States Geological Survey). The system includes a Spring Boot backend, a PostgreSQL database, and a React-based frontend dashboard.
 
-## Features
-- **Fetch & Sync**: Sync latest earthquake data from the USGS API.
-- **Filter**: Filter results by magnitude or date.
-- **Delete**: Remove specific earthquake records from the local storage.
-- **Responsive UI**: Built with React and Bootstrap for a modern feel.
-- **Color Coded**: Magnitudes are color-coded (Gray to Red) based on intensity.
+## 🚀 Key Features
 
-## Tech Stack
-- **Frontend**: React, Vite, Axios, Bootstrap.
-- **Backend**: Java, Spring Boot, Spring Data JPA, PostgreSQL.
-- **Infrastructure**: Docker for database.
+### Backend
+- **Automated Data Ingestion**: Fetches the latest earthquake data from the USGS API.
+- **Data Persistence**: Uses PostgreSQL for reliable storage of earthquake events.
+- **Smart Deduplication**: Prevents duplicate entries using unique USGS identifiers.
+- **Filtering System**: Search earthquakes by minimum magnitude or timestamp.
+- **Comprehensive API**: Full CRUD capabilities for managing earthquake data.
+- **Containerized Database**: Ready-to-use Docker configuration for the database layer.
+
+### Frontend
+- **Interactive Dashboard**: Real-time view of synced earthquake records.
+- **Granular Filtering**: Easy-to-use magnitude range and date filters.
+- **Sync Control**: Manual sync trigger with real-time loading feedback.
+- **Intelligent Formatting**: Handles both raw USGS feature formats and flattened database entities.
+- **Visual Indicators**: Color-coded badges (Gray to Red) representing seismic intensity levels.
 
 ---
 
-## Project Setup
+## 🛠️ Project Setup & Installation
+
+### Prerequisites
+- **Java 17+**
+- **Node.js 18+**
+- **Maven 3.6+**
+- **Docker & Docker Compose**
 
 ### 1. Database Configuration
-The project uses PostgreSQL. You can quickly set it up using the provided Docker Compose file in the backend directory.
-
+The system uses **PostgreSQL 17.4**.
 1. Navigate to the backend directory:
-   \`\`\`bash
+   ```bash
    cd backend
-   \`\`\`
-2. Start the database container:
-   \`\`\`bash
+   ```
+2. Start the database environment:
+   ```bash
    docker-compose up -d
-   \`\`\`
-   - **Database Name**: \`earthquake_db\`
-   - **Port**: \`5435\`
-   - **User/Password**: \`demo\` / \`demo\`
+   ```
+   - **Host/Port**: `localhost:5435`
+   - **DB Name**: `earthquake_db`
+   - **Credentials**: `demo` / `demo`
 
-### 2. Backend Setup
-1. Ensure you have JDK 17+ and Maven installed.
-2. From the \`backend\` directory, run:
-   \`\`\`bash
-   ./mvnw spring-boot:run
-   \`\`\`
-3. The API will be available at \`http://localhost:8080\`.
+### 2. Backend Execution
+From the `backend` directory:
+```bash
+./mvnw spring-boot:run
+```
+The server will start on `http://localhost:8080`.
 
-### 3. Frontend Setup
-1. Ensure you have Node.js installed.
-2. Navigate to the \`frontend\` directory:
-   \`\`\`bash
-   cd frontend
-   \`\`\`
-3. Install dependencies:
-   \`\`\`bash
-   npm install
-   \`\`\`
-4. Run the development server:
-   \`\`\`bash
-   npm run dev
-   \`\`\`
-5. Open your browser at \`http://localhost:3000\`.
+### 3. Frontend Execution
+From the `frontend` directory:
+```bash
+npm install
+npm run dev
+```
+The dashboard will be available at `http://localhost:3000`.
 
 ---
 
-## Assumptions Made
-- The backend API is expected at \`http://localhost:8080/api\`.
-- The frontend is configured to run on port \`3000\` to match the CORS policy in the backend.
-- The USGS API data format is handled dynamically (supports both USGS Feature format and flattened database entities).
+## 📡 API Endpoints
 
-## Optional Improvements Implemented
-- **Robust Error Handling**: Added UI safety checks for missing properties and API failures.
-- **Enhanced UX**: Added a loading spinner to the Sync button for real-time feedback.
-- **Visual Feedback**: Implemented a granular color gradient for earthquake magnitudes (Micro to Major).
-- **Responsive Design**: Used Bootstrap 5 for a clean, mobile-friendly interface.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/earthquakes/fetch` | Sync latest data from USGS to local database |
+| `GET`  | `/api/earthquakes` | Retrieve all stored earthquake records |
+| `GET`  | `/api/earthquakes/filter/magnitude?minMagnitude={val}` | Filter records by minimum magnitude |
+| `GET`  | `/api/earthquakes/filter/time?timestamp={val}` | Filter by events occurring after timestamp |
+| `DELETE` | `/api/earthquakes/{id}` | Permanently delete a specific earthquake record |
+
+---
+
+## 📝 Assumptions & Design Choices
+- **Data Integrity**: USGS API is treated as the single source of truth; unique `id` fields are used for deduplication.
+- **Inversion of Control**: The repository pattern was implemented in the frontend to decouple API logic from UI components.
+- **CORS Policy**: Configured to specifically allow the frontend origin (`http://localhost:3000`) for secure cross-origin requests.
+- **Robustness**: The UI implements safety checks for `undefined` properties and handles varied API response structures gracefully.
+
+## ✨ Optional Improvements Implemented
+- **Full-Stack Dockerization Support**: Database is containerized for "one-click" environment setup.
+- **Granular Visual Feedback**: Implemented a 6-tier color gradient for magnitudes (Micro to Major).
+- **Custom React Hooks**: Encapsulated state management and API orchestration into reusable `useEarthquakes` hook.
+- **Comprehensive Testing**: Backend includes 13+ unit tests using Mockito and JUnit 5 for controller and service layers.
+- **Lombok & Clean Code**: Utilized modern Java features and Lombok to reduce boilerplate.
+
+---
+
+## 📂 Project Structure
+```text
+earthquake-project/
+├── backend/            # Spring Boot Application
+│   ├── src/            # Java source & resources
+│   └── docker-compose.yml
+└── frontend/           # React + Vite Application
+    ├── src/
+    │   ├── hooks/      # State & API hooks
+    │   ├── repository/ # API Service layer
+    │   └── axios/      # Client configuration
+    └── vite.config.js
+```
