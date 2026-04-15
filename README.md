@@ -21,6 +21,20 @@ A full-stack application for monitoring, fetching, and managing earthquake data 
 
 ---
 
+## 🐳 Docker Setup (One-Click Launch)
+The entire stack (Frontend, Backend, and Database) can be launched using Docker Compose from the project root.
+
+1. **Start the whole application**:
+   ```bash
+   docker-compose up -d --build
+   ```
+2. **Access the services**:
+   - **Frontend**: `http://localhost:3000`
+   - **Backend API**: `http://localhost:8080`
+   - **Database**: `localhost:5435`
+
+---
+
 ## 🛠️ Project Setup & Installation
 
 ### Prerequisites
