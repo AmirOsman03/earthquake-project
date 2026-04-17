@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import { useState } from 'react'
 import UseEarthquakes from './hooks/useEarthquakes'
 
 function App() {
@@ -41,6 +41,7 @@ function App() {
         if (mag >= 3.5) return 'bg-secondary'
         return 'bg-secondary bg-opacity-50'
     }
+
     return (
         <div className="container py-5">
             <header className="text-center mb-5 position-relative">
@@ -58,12 +59,13 @@ function App() {
                 </button>
             </header>
 
-            <section className="card shadow-sm mb-5">
+            <section className="card shadow-sm mb-4">
                 <div className="card-body">
                     <div className="row g-3">
                         <div className="col-md-6">
-                            <label htmlFor="minMag" className="form-label fw-bold text-dark">Min
-                                Magnitude: {minMag}</label>
+                            <label htmlFor="minMag" className="form-label fw-bold">
+                                Min Magnitude: <span className="text-primary">{minMag}</span>
+                            </label>
                             <input
                                 type="range"
                                 className="form-range"
@@ -77,8 +79,7 @@ function App() {
                         </div>
 
                         <div className="col-md-6">
-                            <label htmlFor="timeFilter" className="form-label fw-bold text-dark">Filter from
-                                Date:</label>
+                            <label htmlFor="timeFilter" className="form-label fw-bold">Filter from Date:</label>
                             <input
                                 type="date"
                                 className="form-control"
@@ -107,58 +108,72 @@ function App() {
                 )}
 
                 {!loading && !error && (
-                    <div className="row row-cols-1 row-cols-md-2 g-4">
-                        {earthquakes && earthquakes.length > 0 ? (
-                            earthquakes.map((eq) => {
-                                const data = eq.properties || eq;
-                                const mag = typeof data.magnitude === 'number' ? data.magnitude : data.magnitude;
-                                return (
-                                    <div key={eq.id} className="col">
-                                        <div
-                                            className="card h-100 shadow-sm border-0 position-relative overflow-hidden">
-                                            <div className="card-body d-flex align-items-center gap-3">
-                                                <div
-                                                    className={`badge rounded-circle d-flex align-items-center justify-content-center ${getMagClass(mag)}`}
-                                                    style={{width: '50px', height: '50px', fontSize: '1.2rem'}}
-                                                >
-                                                    {typeof mag === 'number' ? mag.toFixed(1) : 'N/A'}
-                                                </div>
-                                                <div className="flex-grow-1 overflow-hidden">
-                                                    <h5 className="card-title text-truncate mb-1">{data.place || 'Unknown Location'}</h5>
-                                                    <p className="card-subtitle text-muted small">{formatDate(data.time)}</p>
-                                                    <div className="d-flex gap-2 mt-2">
-                                                        {data.url && (
-                                                            <a
-                                                                href={data.url}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                className="btn btn-sm btn-outline-primary"
-                                                            >
-                                                                View Details
-                                                            </a>
-                                                        )}
-                                                        <button
-                                                            className="btn btn-sm btn-outline-danger"
-                                                            onClick={() => deleteById(eq.id)}
+                    <div className="table-responsive shadow-sm rounded border">
+                        <table className="table table-striped table-hover align-middle mb-0">
+                            <thead className="table-dark">
+                            <tr>
+                                <th scope="col" style={{ width: '100px' }}>Magnitude</th>
+                                <th scope="col">Place</th>
+                                <th scope="col" style={{ width: '220px' }}>Time</th>
+                                <th scope="col">Mag Type</th>
+                                <th scope="col" style={{ width: '150px' }} className="text-center">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {earthquakes && earthquakes.length > 0 ? (
+                                earthquakes.map((eq) => {
+                                    const data = eq.properties || eq;
+                                    const mag = typeof data.magnitude === 'number' ? data.magnitude : data.magnitude;
+                                    return (
+                                        <tr key={eq.id}>
+                                            <td>
+                                                    <span className={`badge rounded-pill ${getMagClass(mag)}`} style={{ minWidth: '40px' }}>
+                                                        {typeof mag === 'number' ? mag.toFixed(1) : 'N/A'}
+                                                    </span>
+                                            </td>
+                                            <td>
+                                                <div className="fw-medium text-break">{data.place || 'Unknown Location'}</div>
+                                                {data.title && <small className="text-muted">{data.title}</small>}
+                                            </td>
+                                            <td className="text-nowrap">{formatDate(data.time)}</td>
+                                            <td className="text-capitalize">{data.magType || '—'}</td>
+                                            <td className="text-center">
+                                                <div className="d-flex gap-2 justify-content-center">
+                                                    {data.url && (
+                                                        <a
+                                                            href={data.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="btn btn-sm btn-outline-primary"
+                                                            title="View USGS Details"
                                                         >
-                                                            Delete
-                                                        </button>
-                                                    </div>
+                                                            Details
+                                                        </a>
+                                                    )}
+                                                    <button
+                                                        className="btn btn-sm btn-outline-danger"
+                                                        onClick={() => deleteById(eq.id)}
+                                                        title="Delete Record"
+                                                    >
+                                                        🗑️
+                                                    </button>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )
-                            })
-                        ) : (
-                            <div className="col-12 text-center py-5 text-muted">
-                                <p className="fs-5">No earthquakes found. Try syncing or adjusting filters.</p>
-                            </div>
-                        )}
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            ) : (
+                                <tr>
+                                    <td colSpan="5" className="text-center py-5 text-muted">
+                                        <p className="mb-0 fs-5">No earthquakes found. Try syncing or adjusting filters.</p>
+                                    </td>
+                                </tr>
+                            )}
+                            </tbody>
+                        </table>
                     </div>
                 )}
             </main>
-
         </div>
     )
 }
